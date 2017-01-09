@@ -32,7 +32,7 @@ global.告警 {
         设备名称 (等于) ("world")
     }
     那么 {
-        打印 告警.设备名称 + " meet a alarm"
+        //打印 告警.设备名称 + " meet a alarm"
 
     }
 }
@@ -40,7 +40,7 @@ global.告警 {
 global.告警 {
     告警类型 (不等于) (2)
     那么 {
-        打印 "ignore a alarm"
+        //打印 "ignore a alarm"
     }
 }
 
@@ -55,10 +55,10 @@ global.告警 {
         }
     }
     那么 {
-        打印 "hello world ignore a alarm"
+        //打印 "hello world ignore a alarm"
     }
     否则 {
-        打印 告警
+        //打印 告警
     }
 
 }
@@ -202,8 +202,8 @@ def 如果 (Closure action){
 
 
 def 打印 (Object something) {
-    this.globalList << something
-    //println  something
+    //this.globalList << something
+    println  something
 }
 
 def setCurrentLevelValue(bool) {

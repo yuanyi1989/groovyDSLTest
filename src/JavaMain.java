@@ -10,9 +10,9 @@ import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Scanner;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
 
 /**
  * Created by 袁意 on 2017/1/6.
@@ -20,7 +20,12 @@ import java.util.concurrent.TimeUnit;
 public class JavaMain {
 
     public static void main(String[] args) throws ScriptException, IOException, ResourceException, groovy.util.ScriptException, InstantiationException, IllegalAccessException, NoSuchMethodException, InvocationTargetException {
-        useGroovyEngine();
+        redeploy();
+        useGroovyEngine(10);
+        System.out.println("push any key to redeploy");
+        new Scanner(System.in).next();
+        redeploy();
+        useGroovyEngine(10);
     }
 
     public static void useGroovyShell(){
@@ -45,28 +50,22 @@ public class JavaMain {
     }
 
     private static final ExecutorService service = Executors.newFixedThreadPool(10);
-    public static void useGroovyEngine() throws IOException, ResourceException, groovy.util.ScriptException, IllegalAccessException, InstantiationException, NoSuchMethodException, InvocationTargetException {
+    private static Constructor<Binding> constructor;
+    private static Method method;
 
+    public static void redeploy() throws IOException, ResourceException, groovy.util.ScriptException, NoSuchMethodException {
         String[] roots = new  String[]{"src/Rule5.groovy"} ;//定义Groovy脚本引擎的根路径
         GroovyScriptEngine engine = new GroovyScriptEngine(roots);
         Class main = engine.loadScriptByName("Rule5.groovy");
 
-        Constructor<Binding> constructor = main.getConstructor(Binding.class);
-        Method mainMethod = main.getMethod("run");
-        long start = System.currentTimeMillis();
+        constructor = main.getConstructor(Binding.class);
+        method = main.getMethod("run");
+    }
 
-    for (int i=0; i<5; i++) {
-            service.execute(new Task(100000, constructor, mainMethod));
+    public static void useGroovyEngine(int amount) {
+        for (int i=0; i<5; i++) {
+            service.execute(new Task(amount, constructor, method));
         }
-        try {
-            service.shutdown();
-            service.awaitTermination(100, TimeUnit.SECONDS);
-            System.out.println(System.currentTimeMillis()-start);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
-
     }
 
     private static class Task implements  Runnable{
