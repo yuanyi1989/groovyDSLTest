@@ -82,6 +82,7 @@ class main{
         closure.getThisObject().data = data
         closure.getThisObject().currentOperate = "and"
         closure.getThisObject().currentLevelValue = true
+        closure.getThisObject().globalList = []
         closure()
     }
 }
@@ -199,8 +200,10 @@ def 如果 (Closure action){
     action()
 }
 
+
 def 打印 (Object something) {
-    println  something
+    this.globalList << something
+    //println  something
 }
 
 def setCurrentLevelValue(bool) {
